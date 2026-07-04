@@ -14,7 +14,7 @@ class HawkingSimulation:
         dt=0.005,         # timestep
         r0=30.0,          # initial packet center
         sigma=2.0,        # initial width
-        p0=-2.5,          # initial momentum
+        p0=-0.5,          # initial momentum
         hawking_temperature=0.15,
         radiation_width=3.0,
         l=0,
