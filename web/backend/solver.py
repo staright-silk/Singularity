@@ -32,6 +32,8 @@ class HawkingSimulation:
         p0=-2.5,
         hawking_temperature=0.15,
         radiation_width=3.0,
+        l=0,
+        rng_seed: int | None = None,
         eps=0.01,
         awl=5.0,
         awr=15.0,
@@ -47,6 +49,8 @@ class HawkingSimulation:
         self.p0 = float(p0)
         self.hawking_temperature = float(hawking_temperature)
         self.radiation_width = float(radiation_width)
+        self.l = int(l)
+        self.rng_seed = rng_seed
         self.eps = float(eps)
         self.awl = float(awl)
         self.awr = float(awr)
@@ -76,7 +80,12 @@ class HawkingSimulation:
         self.dr = self.r[1] - self.r[0]
         self.k = 2 * np.pi * np.fft.fftfreq(self.N, d=self.dr)
 
-        self.V = -1.0 / (self.r - self.rs + self.eps)
+        # Regge-Wheeler / scalar-like effective potential (approximate)
+        # V(r) = (1 - rs/r) * ( l(l+1)/r^2 + rs / r^3 )
+        # Use eps to avoid exact divergence at the horizon r=rs.
+        rr = np.maximum(self.r, self.rs + self.eps)
+        factor = 1.0 - (self.rs / rr)
+        self.V = factor * (self.l * (self.l + 1) / rr**2 + (self.rs) / rr**3)
 
         W = np.zeros_like(self.r)
         mask = self.r < (self.rs + self.awl)
@@ -93,6 +102,11 @@ class HawkingSimulation:
 
         self.hawking_mask = (self.r >= self.rs) & (self.r <= self.rs + self.radiation_width)
         self._n_hawking = int(np.sum(self.hawking_mask))
+        # RNG for reproducible stochastic source
+        if self.rng_seed is None:
+            self._rng = np.random.default_rng()
+        else:
+            self._rng = np.random.default_rng(self.rng_seed)
 
     # ------------------------------------------------------------------
     # State control
@@ -106,6 +120,9 @@ class HawkingSimulation:
         self.psi = psi
         self._last_noise = np.zeros_like(psi)
 
+        # cumulative absorbed probability via imaginary potential W
+        self.captured = 0.0
+
         self.step_count = 0
         self.time = 0.0
         self.times: list[float] = []
@@ -116,9 +133,8 @@ class HawkingSimulation:
     def step(self):
         """Advance the simulation by one dt. Returns (probability, hawking_flux)."""
         psi = self.psi * self.UV
-
         noise = np.zeros_like(psi, dtype=complex)
-        phase = np.exp(2j * np.pi * np.random.rand(self._n_hawking))
+        phase = np.exp(2j * np.pi * self._rng.random(self._n_hawking))
         hw = (
             np.sqrt(self.hawking_temperature)
             * phase
@@ -137,6 +153,14 @@ class HawkingSimulation:
 
         P = float(np.sum(np.abs(psi) ** 2) * self.dr)
         H = float(np.sum(np.abs(noise) ** 2) * self.dr)
+
+        # Estimate absorbed probability during this step from the imaginary potential W
+        # dP/dt = -2 * ∫ W |psi|^2 dr  => ΔP_absorbed ≈ 2 * ∑ W |psi|^2 * dr * dt
+        absorbed = 2.0 * float(np.sum(self.W * np.abs(psi) ** 2) * self.dr) * self.dt
+        # ensure non-negative
+        if absorbed < 0:
+            absorbed = 0.0
+        self.captured += absorbed
 
         self.step_count += 1
         self.time = self.step_count * self.dt
@@ -165,7 +189,8 @@ class HawkingSimulation:
             "time": self.time,
             "step": self.step_count,
             "probability": self.probs[-1] if self.probs else 1.0,
-            "captured_probability": 1.0 - (self.probs[-1] if self.probs else 1.0),
+            # use cumulative absorbed probability computed from W rather than 1-P
+            "captured_probability": float(self.captured),
             "flux": self.flux[-1] if self.flux else 0.0,
             "rs": self.rs,
             "running": self.running,
