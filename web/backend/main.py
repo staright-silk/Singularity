@@ -14,10 +14,12 @@ import json
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from report_service import get_job, start_report
 from solver import HawkingSimulation
 
 logging.basicConfig(level=logging.INFO)
@@ -174,6 +176,11 @@ class ParamUpdate(BaseModel):
     noise_amp: float | None = None
 
 
+class ReportRequest(BaseModel):
+    label: str = "singularity_run"
+    quality: str = "quick"
+
+
 @app.get("/api/state")
 def api_get_state():
     return sim.get_state()
@@ -217,6 +224,31 @@ def api_set_params(update: ParamUpdate):
     sim.reset()
     sim.running = was_running
     return sim.get_params()
+
+
+@app.post("/api/report")
+def api_start_report(request: ReportRequest):
+    quality = request.quality if request.quality in {"quick", "full"} else "quick"
+    return start_report(label=request.label, quality=quality)
+
+
+@app.get("/api/report/{job_id}")
+def api_get_report(job_id: str):
+    job = get_job(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="report job not found")
+    job.pop("traceback", None)
+    return job
+
+
+@app.get("/api/report/{job_id}/download")
+def api_download_report(job_id: str):
+    job = get_job(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="report job not found")
+    if job.get("status") != "ready" or not job.get("path"):
+        raise HTTPException(status_code=409, detail="report is not ready yet")
+    return FileResponse(job["path"], media_type="application/pdf", filename=job.get("filename", "research_report.pdf"))
 
 
 @app.get("/")

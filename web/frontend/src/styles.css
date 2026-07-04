@@ -35,8 +35,10 @@ html, body, #root {
 body {
   background: var(--bg);
   background-image:
-    radial-gradient(ellipse at 20% -10%, rgba(125, 207, 255, 0.06), transparent 60%),
-    radial-gradient(ellipse at 90% 110%, rgba(255, 158, 100, 0.05), transparent 60%);
+    linear-gradient(rgba(125, 207, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(125, 207, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(180deg, #0a0d13 0%, #0c1018 52%, #090b10 100%);
+  background-size: 42px 42px, 42px 42px, auto;
   color: var(--text);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -61,9 +63,9 @@ button, input {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 22px;
   gap: 18px;
-  max-width: 1400px;
+  max-width: 1460px;
   margin: 0 auto;
 }
 
@@ -143,7 +145,7 @@ button, input {
    ====================================================================== */
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   gap: 18px;
   align-items: start;
 }
@@ -172,11 +174,15 @@ button, input {
    ====================================================================== */
 .scope-panel {
   position: relative;
-  background: var(--surface);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 24%),
+    var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px;
-  height: 420px;
+  height: min(54vh, 520px);
+  min-height: 390px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
 }
 
 .scope-canvas {
@@ -286,7 +292,7 @@ button, input {
    Control panel — physical console feel
    ====================================================================== */
 .control-panel {
-  background: var(--surface);
+  background: linear-gradient(180deg, var(--surface-raised), var(--surface));
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px;
@@ -333,6 +339,8 @@ button, input {
   border-radius: var(--radius);
   cursor: pointer;
   transition: transform 0.08s ease, border-color 0.15s ease, color 0.15s ease;
+  text-align: center;
+  text-decoration: none;
 }
 
 .console-btn:hover {
@@ -347,6 +355,12 @@ button, input {
 .console-btn:focus-visible {
   outline: 2px solid var(--accent-bound);
   outline-offset: 2px;
+}
+
+.console-btn:disabled,
+.console-btn.is-disabled {
+  opacity: 0.45;
+  pointer-events: none;
 }
 
 .console-btn--go.is-active {
@@ -471,4 +485,173 @@ input[type="range"]::-moz-range-track {
   font-size: 11px;
   color: var(--text-muted);
   margin-left: 2px;
+}
+
+/* Report export */
+.report-panel {
+  background:
+    linear-gradient(135deg, rgba(125, 207, 255, 0.08), transparent 34%),
+    linear-gradient(180deg, var(--surface-raised), var(--surface));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.panel-kicker {
+  display: block;
+  color: var(--accent-radiation);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.panel-heading h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.report-pill {
+  border: 1px solid var(--border-bright);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  padding: 5px 8px;
+}
+
+.report-pill--busy {
+  color: var(--accent-radiation);
+  border-color: rgba(255, 158, 100, 0.55);
+}
+
+.report-pill--ready {
+  color: #9ece6a;
+  border-color: rgba(158, 206, 106, 0.55);
+}
+
+.report-pill--failed {
+  color: var(--accent-danger);
+  border-color: rgba(247, 118, 142, 0.55);
+}
+
+.report-preview {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.report-sheet {
+  height: 88px;
+  border: 1px solid rgba(205, 214, 244, 0.18);
+  background: #eef2f8;
+  border-radius: 3px;
+  padding: 11px 10px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.report-sheet span {
+  display: block;
+  height: 5px;
+  background: #273144;
+  border-radius: 1px;
+  margin-bottom: 7px;
+}
+
+.report-sheet span:nth-child(1) {
+  width: 70%;
+  height: 7px;
+  background: #0f1725;
+}
+
+.report-sheet span:nth-child(2) { width: 48%; background: #c97249; }
+.report-sheet span:nth-child(3) { width: 82%; }
+.report-sheet span:nth-child(4) { width: 62%; }
+
+.report-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.report-copy strong {
+  color: var(--text);
+  font-size: 13px;
+}
+
+.report-copy span {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.report-metrics {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.report-error {
+  color: var(--accent-danger);
+  border: 1px solid rgba(247, 118, 142, 0.35);
+  background: rgba(247, 118, 142, 0.08);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.report-actions {
+  display: grid;
+  grid-template-columns: 1.1fr 0.8fr 1fr;
+  gap: 8px;
+}
+
+.report-btn-main {
+  color: var(--accent-bound);
+  border-color: rgba(125, 207, 255, 0.45);
+}
+
+.report-download {
+  color: #9ece6a;
+  border-color: rgba(158, 206, 106, 0.45);
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding: 14px;
+  }
+
+  .scope-panel {
+    min-height: 320px;
+  }
+
+  .report-preview {
+    grid-template-columns: 60px minmax(0, 1fr);
+  }
+
+  .report-sheet {
+    height: 76px;
+  }
 }

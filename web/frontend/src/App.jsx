@@ -3,6 +3,7 @@ import ScopePanel from "./components/ScopePanel.jsx";
 import StripChart from "./components/StripChart.jsx";
 import ControlPanel from "./components/ControlPanel.jsx";
 import Readout from "./components/Readout.jsx";
+import ReportPanel from "./components/ReportPanel.jsx";
 
 const STATUS_LABEL = {
   connected: "LINK ESTABLISHED",
@@ -50,6 +51,7 @@ export default function App() {
             <Readout label="PROBABILITY" value={(state?.probability ?? 1).toFixed(4)} />
             <Readout label="CAPTURED" value={(state?.captured_probability ?? 0).toFixed(4)} />
           </div>
+          <ReportPanel state={state} />
         </aside>
       </main>
     </div>
