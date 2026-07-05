@@ -13,13 +13,12 @@ export default function Model() {
         <div className="page-hero">
           <div className="eyebrow mono">Held in the hand</div>
           <h1 className="page-title">
-            The same process,
+            A dark sphere,
             <br />
-            <em>made physical.</em>
+            <em>a ring of light.</em>
           </h1>
           <p className="page-sub">
-            The physical model is not a separate simulation. It is a material version of the same ingredients from
-            the README: a wave packet, a horizon, and a near-horizon emission region made visible.
+            This object is meant to feel like a sketch of the solver rather than a fantasy version of it.
           </p>
         </div>
 
@@ -30,27 +29,27 @@ export default function Model() {
             </Reveal>
             <Reveal>
               <div className="section-eyebrow mono">Construction</div>
-              <h2 className="section-title">A horizon, a disk, and a light source.</h2>
+              <h2 className="section-title">A horizon, a ring, and a light source.</h2>
               <p className="section-desc">
-                The horizon and disk are printed separately so the disk can remain translucent while the horizon
-                stays matte black, making the geometry legible without pretending it is a full spacetime model.
+                The disc and the sphere are printed separately so each one can do its job clearly. The sphere marks
+                the horizon; the ring carries the surrounding light.
               </p>
               <ul className="model-list">
                 <li>
-                  <span className="dot">→</span>A matte-black event-horizon sphere stands in for the Schwarzschild
-                  radius rs.
+                  <span className="dot">→</span>A black sphere marks the horizon so the center of the model feels
+                  like a boundary rather than an ornament.
                 </li>
                 <li>
-                  <span className="dot">→</span>A translucent disk ring represents the radial domain outside the
-                  horizon.
+                  <span className="dot">→</span>A translucent ring suggests the space outside the horizon without
+                  pretending to be the whole geometry.
                 </li>
                 <li>
-                  <span className="dot">→</span>Addressable LEDs echo the Hawking-like emission model rather than a
-                  fixed animation.
+                  <span className="dot">→</span>Addressable LEDs give the object a faint emission field instead of a
+                  decorative glow.
                 </li>
                 <li>
-                  <span className="dot">→</span>The object turns the numerical process into something that can be seen
-                  and touched at an exhibition table.
+                  <span className="dot">→</span>It is meant to sit on a table and make the numerical setup easier to
+                  talk about.
                 </li>
               </ul>
             </Reveal>
@@ -66,9 +65,9 @@ export default function Model() {
             <div className="grid-2">
               <Reveal className="card glass">
                 <span className="card-index mono">printing</span>
-                <h3 className="card-name">Filament & Print</h3>
+                <h3 className="card-name">Printed parts</h3>
                 <p className="card-desc">
-                  Matte black PLA or PETG for the horizon, and translucent or clear filament for the disk. FDM is
+                  Matte black PLA or PETG for the sphere, and translucent or clear filament for the ring. FDM is
                   enough for the geometry described in the project notes.
                 </p>
                 <div className="tags">
@@ -79,9 +78,9 @@ export default function Model() {
               </Reveal>
               <Reveal className="card glass">
                 <span className="card-index mono">structure</span>
-                <h3 className="card-name">Base & Mounts</h3>
+                <h3 className="card-name">Base & mounts</h3>
                 <p className="card-desc">
-                  An MDF or acrylic plate and simple standoffs keep the disk clear of the horizon while leaving the
+                  An MDF or acrylic plate and simple standoffs keep the ring clear of the sphere while leaving the
                   geometry readable from the side.
                 </p>
                 <div className="tags">
@@ -91,10 +90,10 @@ export default function Model() {
               </Reveal>
               <Reveal className="card glass">
                 <span className="card-index mono">lighting</span>
-                <h3 className="card-name">LEDs & Control</h3>
+                <h3 className="card-name">Electronics</h3>
                 <p className="card-desc">
-                  WS2812B addressable LEDs and an ESP32 or Arduino controller provide a controllable light source
-                  for the emission region.
+                  WS2812B addressable LEDs and an ESP32 or Arduino controller provide a light source for the
+                  emission region without turning it into a decorative lamp.
                 </p>
                 <div className="tags">
                   <span className="tag">WS2812B</span>
@@ -103,10 +102,10 @@ export default function Model() {
               </Reveal>
               <Reveal className="card glass">
                 <span className="card-index mono">finishing</span>
-                <h3 className="card-name">Paint & Tools</h3>
+                <h3 className="card-name">Finish & tools</h3>
                 <p className="card-desc">
-                  Matte black spray for the horizon and a clear coat for the disk are enough to keep the object
-                  visually direct, with a soldering iron and multimeter for wiring checks.
+                  Matte black spray for the sphere and a clear coat for the ring are enough to keep it visually
+                  direct, with a soldering iron and multimeter for the wiring.
                 </p>
                 <div className="tags">
                   <span className="tag">Spray paint</span>
@@ -120,8 +119,7 @@ export default function Model() {
         <section>
           <Reveal className="section-inner">
             <p className="pull">
-              The optional next step is to let the ESP32 respond to live Hawking-flux values from the solver, so the
-              disk brightness answers to <span>an actual running simulation</span> rather than a fixed animation.
+              It is there to remind you that the math has a body.
             </p>
           </Reveal>
         </section>

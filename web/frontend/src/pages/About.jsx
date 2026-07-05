@@ -6,28 +6,28 @@ import Reveal from "../components/Reveal.jsx";
 const TIMELINE = [
   {
     phase: "Phase 1",
-    title: "A radial wave model",
-    desc: "The project begins with a live web dashboard for a 1D radial Hawking-radiation model and a standalone Python engine for black-hole wave-packet scattering.",
+    title: "One wave packet",
+    desc: "The project begins with a simple packet on a radial grid and a question about what happens when it approaches the horizon.",
   },
   {
     phase: "Phase 2",
-    title: "A Schwarzschild-like environment",
-    desc: "The solver moves a Gaussian wave packet on a radial grid outside the event horizon, using an effective potential shaped by the Schwarzschild radius rs.",
+    title: "A horizon-shaped potential",
+    desc: "The solver moves that packet through a Schwarzschild-like potential so the geometry matters to the evolution.",
   },
   {
     phase: "Phase 3",
-    title: "Split-operator evolution",
-    desc: "The live backend advances the complex wavefunction with a split-operator FFT step, absorbing boundaries, and a stochastic Hawking-like source near the horizon.",
+    title: "A source near the edge",
+    desc: "A small stochastic term is added near the horizon so the model can show emission without pretending to be a complete theory.",
   },
   {
     phase: "Phase 4",
-    title: "A browser-based instrument panel",
-    desc: "FastAPI and WebSocket deliver state frames to React, where retained probability, emitted flux, captured probability, and the horizon marker are displayed.",
+    title: "A live readout in the browser",
+    desc: "The backend sends state updates to the page, where the probability curve and the near-horizon signal can be seen as they change.",
   },
   {
     phase: "Phase 5",
-    title: "A wider simulation stack",
-    desc: "The repository keeps both the live web workflow and the standalone research engines so the same numerical ideas can be inspected in more than one way.",
+    title: "A simple object for a table",
+    desc: "The physical piece keeps the same geometry in a form that can be touched, lit, and explained without much ceremony.",
   },
 ];
 
@@ -41,14 +41,13 @@ export default function About() {
         <div className="page-hero">
           <div className="eyebrow mono">Origin & scope</div>
           <h1 className="page-title">
-            The project grows
+            A project built
             <br />
-            <em>from one idea.</em>
+            <em>from one question.</em>
           </h1>
           <p className="page-sub">
-            Project Singularity started as a numerical description of a black-hole wave packet and grew into a
-            live solver, a web dashboard, and a physical companion piece. The repository keeps the process visible
-            instead of hiding it behind a single polished animation.
+            What if a black-hole model could be described without turning it into a spectacle? The code, the plots,
+            and the object all stay close to the same small setup.
           </p>
         </div>
 
@@ -56,7 +55,7 @@ export default function About() {
           <div className="section-inner">
             <Reveal className="section-head">
               <div className="section-eyebrow mono">Timeline</div>
-              <h2 className="section-title">How the stack came together.</h2>
+              <h2 className="section-title">How the pieces came together.</h2>
             </Reveal>
             <Reveal className="timeline">
               {TIMELINE.map((item) => (
@@ -78,9 +77,8 @@ export default function About() {
               <div className="section-eyebrow mono">Honesty over polish</div>
               <h2 className="section-title">What the model is, and what it is not.</h2>
               <p className="section-desc">
-                The README is explicit about the scope: this is not a full quantum-gravity simulator. It is a
-                controlled model built from a wave packet, an effective black-hole potential, split-operator
-                evolution, absorbing boundaries, and diagnostics that are meant to be examined.
+                The repository does not pretend to be a complete theory. It keeps the terms visible: a packet, a
+                potential, a boundary, a source, and a signal.
               </p>
             </Reveal>
           </div>

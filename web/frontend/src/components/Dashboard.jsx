@@ -18,7 +18,7 @@ export default function Dashboard() {
       <header className="topbar">
         <div className="brand">
           <span className="brand-eyebrow">Project Singularity</span>
-          <h1 className="brand-title">Hawking Radiation Module</h1>
+          <h1 className="brand-title">Near-Horizon Model</h1>
         </div>
         <div className={`conn-status conn-status--${status}`}>
           <span className="conn-dot" />

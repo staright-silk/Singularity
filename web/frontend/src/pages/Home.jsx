@@ -12,16 +12,16 @@ export default function Home() {
 
       <main>
         <div className="page-hero">
-          <div className="eyebrow mono">Numerical black-hole simulation stack</div>
+          <div className="eyebrow mono">A black-hole model, kept visible</div>
           <h1 className="page-title">
-            A controlled
+            A wave packet
             <br />
-            <em>quantum model</em>
+            <em>near a horizon</em>
           </h1>
           <p className="page-sub">
-            Project Singularity is a numerical black-hole quantum simulation stack. It pairs a live web dashboard
-            for a 1D radial Hawking-radiation model with standalone Python research engines for black-hole
-            wave-packet scattering.
+            This project started with a plain question: what happens when a packet of probability moves toward a
+            horizon? The answer is a compact numerical model that keeps the steps visible instead of hiding them
+            behind a polished animation.
           </p>
           <div className="hud glass">
             <div className="hud-item">
@@ -46,20 +46,20 @@ export default function Home() {
         <section>
           <div className="section-inner">
             <Reveal className="section-head">
-              <div className="section-eyebrow mono">The process</div>
-              <h2 className="section-title">Two related pieces, one shared method.</h2>
+              <div className="section-eyebrow mono">The parts</div>
+              <h2 className="section-title">The model is simple enough to describe.</h2>
               <p className="section-desc">
-                The live backend evolves a complex wavefunction near a Schwarzschild-like horizon, while the
-                standalone Python engines explore the same ideas in a more research-oriented form.
+                Each page focuses on one piece of the setup: the packet, the grid, the solver step, and the readout
+                that comes back from it.
               </p>
             </Reveal>
             <div className="grid-2">
               <Reveal as={Link} to="/simulation" className="card glass">
                 <span className="card-index mono">01 / solver</span>
-                <h3 className="card-name">Live Wave Solver</h3>
+                <h3 className="card-name">The wave packet</h3>
                 <p className="card-desc">
-                  The backend solves a 1D radial wave equation in a Schwarzschild-inspired background, tracks
-                  retained probability, and streams the result to a React dashboard.
+                  A normalized Gaussian begins on a radial grid just outside the horizon. The solver follows it as it
+                  interacts with a Schwarzschild-like potential.
                 </p>
                 <div className="tags">
                   <span className="tag">Python</span>
@@ -68,10 +68,10 @@ export default function Home() {
               </Reveal>
               <Reveal as={Link} to="/simulation" className="card glass">
                 <span className="card-index mono">02 / engines</span>
-                <h3 className="card-name">Research Engines</h3>
+                <h3 className="card-name">The code</h3>
                 <p className="card-desc">
-                  The repository also contains standalone Python models for black-hole wave-packet scattering,
-                  built from a Gaussian packet, an effective potential, and split-operator evolution.
+                  The repository has two ways to look at the same idea: a live web version and a Python version for
+                  more direct experiments.
                 </p>
                 <div className="tags">
                   <span className="tag">Wave packet</span>
@@ -80,10 +80,10 @@ export default function Home() {
               </Reveal>
               <Reveal as={Link} to="/simulation" className="card glass">
                 <span className="card-index mono">03 / dashboard</span>
-                <h3 className="card-name">Instrument Panel</h3>
+                <h3 className="card-name">The readout</h3>
                 <p className="card-desc">
-                  The browser receives state frames over WebSocket and plots retained density, Hawking-like flux,
-                  captured probability, and the horizon marker in real time.
+                  The browser receives state updates and plots the probability curve, the absorbed part, and the
+                  near-horizon source as the calculation goes forward.
                 </p>
                 <div className="tags">
                   <span className="tag">React</span>
@@ -92,10 +92,10 @@ export default function Home() {
               </Reveal>
               <Reveal as={Link} to="/model" className="card glass">
                 <span className="card-index mono">04 / object</span>
-                <h3 className="card-name">Physical Companion</h3>
+                <h3 className="card-name">The object</h3>
                 <p className="card-desc">
-                  The physical model translates the same numerical ingredients into a tangible exhibit, so the
-                  horizon and emission region can be seen and touched.
+                  The physical model takes the same geometry and turns it into something you can place on a table and
+                  look at for a minute.
                 </p>
                 <div className="tags">
                   <span className="tag">PLA/PETG</span>
@@ -109,8 +109,7 @@ export default function Home() {
         <section>
           <Reveal className="section-inner" as="div">
             <p className="pull">
-              This is not a full quantum-gravity simulator. It is a controlled numerical model built from standard
-              ingredients: a wave packet, an effective black-hole potential, absorbing boundaries, and diagnostics.
+              The point is not to look spectacular. The point is to make the assumptions legible.
             </p>
           </Reveal>
         </section>
