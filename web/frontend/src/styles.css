@@ -1,30 +1,31 @@
 /* ======================================================================
-   Project Singularity — design tokens
-   Palette is functionally grounded, not decorative: cyan marks what's
-   still bound inside the wavefunction, amber marks what's escaping as
-   Hawking radiation. That mapping holds everywhere color appears.
+   Project Singularity — Otherworldly Theme
+   This alternate theme pushes the site into a neon, alien palette with
+   stronger depth, glow, and cinematic motion while preserving layout
+   tokens used by the dashboard and simulation UI.
    ====================================================================== */
 :root {
-  --bg: #0a0d13;
-  --surface: #10141d;
-  --surface-raised: #161c28;
-  --border: #232a3a;
-  --border-bright: #303b52;
-  --transition-smooth: 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  --shadow-strong: 0 24px 70px rgba(0, 0, 0, 0.48);
+  --bg: #05030a; /* near-black */
+  --surface: rgba(6, 6, 12, 0.6);
+  --surface-raised: rgba(12, 8, 20, 0.65);
+  --border: rgba(255,255,255,0.04);
+  --border-bright: rgba(255,255,255,0.08);
+  --transition-smooth: 300ms cubic-bezier(0.2, 0.9, 0.2, 1);
+  --shadow-strong: 0 30px 90px rgba(0, 0, 0, 0.6);
 
-  --text: #cdd6f4;
-  --text-muted: #6b7490;
-  --text-dim: #454e68;
+  --text: #e9eef8;
+  --text-muted: #9aa3b8;
+  --text-dim: #5f6a80;
 
-  --accent-bound: #7dcfff;   /* wavefunction still inside the well */
-  --accent-radiation: #ff9e64; /* what has escaped */
-  --accent-danger: #f7768e;
+  --neon-teal: #5ff0e6;
+  --neon-violet: #b06cff;
+  --neon-amber: #ffb86b;
+  --accent-danger: #ff6b8a;
 
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
-  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
-  --radius: 4px;
+  --radius: 12px;
 }
 
 * { box-sizing: border-box; }
@@ -35,53 +36,45 @@ html, body, #root {
 }
 
 body {
-  background: var(--bg);
-  background-image:
-    radial-gradient(ellipse at 20% -10%, rgba(125, 207, 255, 0.06), transparent 60%),
-    radial-gradient(ellipse at 90% 110%, rgba(255, 158, 100, 0.05), transparent 60%);
+  background: radial-gradient(1200px circle at 20% 10%, rgba(86, 12, 98, 0.18), rgba(2,6,12,1) 30%),
+              radial-gradient(900px circle at 88% 88%, rgba(18, 60, 90, 0.12), transparent 40%),
+              var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   position: relative;
+  min-height: 100vh;
 }
 
+/* subtle animated nebula fields */
 body::before,
 body::after {
   content: "";
   position: fixed;
   pointer-events: none;
   z-index: -1;
-  filter: blur(90px);
-  opacity: 0.55;
-  animation: drift 24s ease-in-out infinite alternate;
+  filter: blur(120px) saturate(140%);
+  opacity: 0.7;
 }
 
 body::before {
-  width: 36vw;
-  height: 36vw;
-  top: -10vw;
-  left: -10vw;
-  background: radial-gradient(circle, rgba(125, 207, 255, 0.24), transparent 70%);
+  width: 48vw; height: 48vw; top: -14vw; left: -8vw;
+  background: radial-gradient(circle, rgba(176,108,255,0.18), transparent 55%);
+  animation: slow-drift 28s linear infinite;
 }
 
 body::after {
-  width: 42vw;
-  height: 42vw;
-  right: -10vw;
-  bottom: -16vw;
-  background: radial-gradient(circle, rgba(255, 158, 100, 0.2), transparent 70%);
-  animation-duration: 30s;
+  width: 44vw; height: 44vw; right: -12vw; bottom: -18vw;
+  background: radial-gradient(circle, rgba(95,240,230,0.12), transparent 55%);
+  animation: slow-drift 36s linear infinite reverse;
 }
 
 button, input {
   font-family: inherit;
 }
 
-@keyframes drift {
-  0% { transform: translate3d(0, 0, 0) scale(1); }
-  100% { transform: translate3d(4%, -3%, 0) scale(1.06); }
-}
+@keyframes slow-drift { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(6%, -4%, 0) scale(1.07); } }
 
 /* Respect reduced-motion preference */
 @media (prefers-reduced-motion: reduce) {
@@ -98,8 +91,8 @@ button, input {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  gap: 18px;
+  padding: 28px;
+  gap: 20px;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -118,8 +111,8 @@ button, input {
   display: block;
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.18em;
-  color: var(--accent-bound);
+  letter-spacing: 0.22em;
+  color: var(--neon-teal);
   text-transform: uppercase;
   margin-bottom: 4px;
 }
@@ -140,10 +133,11 @@ button, input {
   font-size: 11px;
   letter-spacing: 0.08em;
   color: var(--text-muted);
-  padding: 6px 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
+  padding: 8px 12px;
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  box-shadow: 0 6px 30px rgba(3,6,12,0.6) inset;
 }
 
 .conn-dot {
@@ -155,25 +149,22 @@ button, input {
 }
 
 .conn-status--connected .conn-dot {
-  background: #9ece6a;
-  box-shadow: 0 0 8px #9ece6a;
-  animation: pulse-soft 2s ease-in-out infinite;
+  background: var(--neon-teal);
+  box-shadow: 0 0 14px var(--neon-teal);
+  animation: neon-pulse 2s ease-in-out infinite;
 }
 
 .conn-status--connecting .conn-dot {
-  background: var(--accent-radiation);
-  animation: pulse-soft 0.9s ease-in-out infinite;
+  background: var(--neon-amber);
+  animation: neon-pulse 1.2s ease-in-out infinite;
 }
 
 .conn-status--disconnected .conn-dot {
   background: var(--accent-danger);
-  animation: pulse-soft 0.6s ease-in-out infinite;
+  animation: neon-pulse 0.8s ease-in-out infinite;
 }
 
-@keyframes pulse-soft {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
-}
+@keyframes neon-pulse { 0% { opacity: 0.28; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.12); } 100% { opacity: 0.28; transform: scale(0.9); } }
 
 /* ======================================================================
    Layout
@@ -816,5 +807,6 @@ footer.site-footer{
   .site-page::after,
   .page-hero::before,
   .page-hero::after,
-  .model-figure{ animation: none; }
+  .model-figure,
+  .hero-panel__orb{ animation: none; }
 }
