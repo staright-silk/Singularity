@@ -1,18 +1,13 @@
 import { useEffect, useRef } from "react";
 import { animate, createTimeline, stagger } from "animejs";
 
-/** Always show the intro. (Previously session-locked via sessionStorage —
- * removed so it plays on every load/refresh.) */
+/** Always show the intro. */
 export function shouldShowIntro() {
   return true;
 }
 
 /**
- * Full-screen intro: the black-hole backdrop dimmed behind a hand-lettered
- * "Singularity" wordmark that writes itself on, followed by a loading bar,
- * then fades out to reveal the actual site. Calls onDone() exactly once,
- * either after the animation finishes or immediately if the browser prefers
- * reduced motion.
+ * Full-screen intro: fixed to prevent letter layout pops and wobbles.
  */
 export default function Splash({ onDone }) {
   const rootRef = useRef(null);
@@ -34,13 +29,18 @@ export default function Splash({ onDone }) {
     }
 
     const word = wordRef.current;
-    const text = word.textContent;
+    const text = word.textContent.trim();
+    
+    // Fix layout shifting/wobbling: wrap letters securely with strict display properties
     word.innerHTML = text
       .split("")
-      .map((ch) => `<span class="intro-letter">${ch === " " ? "&nbsp;" : ch}</span>`)
+      .map((ch) => {
+        if (ch === " ") return `<span class="intro-letter" style="display: inline-block;">&nbsp;</span>`;
+        return `<span class="intro-letter" style="display: inline-block; opacity: 0; transform-origin: center bottom;">${ch}</span>`;
+      })
       .join("");
+      
     const letterEls = word.querySelectorAll(".intro-letter");
-    letterEls.forEach((el) => { el.style.opacity = "0"; });
     if (barFillRef.current) barFillRef.current.style.width = "0%";
 
     const tl = createTimeline({
@@ -55,33 +55,32 @@ export default function Splash({ onDone }) {
       },
     });
 
+    // Clean, direct path configuration to eliminate abrupt popping frames
     tl.add(letterEls, {
       opacity: [0, 1],
-      translateY: [18, 0],
-      rotate: [-6, 0],
-      duration: 480,
-      delay: stagger(65),
+      translateY: [24, 0],
+      rotate: [-3, 0],
+      duration: 800,
+      delay: stagger(120), // Slightly accelerated stagger for a cohesive flowing look
     }).add(
       barFillRef.current,
-      { width: ["0%", "100%"], duration: 850, easing: "easeInOutQuad" },
-      "-=150"
+      { width: ["0%", "100%"], duration: 1200, easing: "easeInOutQuad" },
+      "-=300"
     );
 
-    // Safety net: if anything about the animation library misbehaves,
-    // never trap the user on the splash screen forever.
-    const fallback = setTimeout(finish, 6000);
+    const fallback = setTimeout(finish, 9000);
 
     return () => {
       clearTimeout(fallback);
       tl.pause();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className="intro-splash" ref={rootRef}>
       <div className="intro-content">
-        <div className="intro-word" ref={wordRef}>
+        {/* We keep the text node pristine on initial paint so no structural shift occurs */}
+        <div className="intro-word" ref={wordRef} style={{ display: "block", whiteSpace: "nowrap" }}>
           Singularity
         </div>
         <div className="intro-bar">

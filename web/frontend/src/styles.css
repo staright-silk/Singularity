@@ -861,11 +861,8 @@ footer.site-footer{
   font-weight: 400;
   font-size: clamp(72px, 14vw, 168px);
   line-height: 1.15;
-  background: linear-gradient(120deg, #eaf6ff 8%, #ffd9a0 55%, #ffb26b 92%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 0 34px rgba(255, 190, 120, 0.3));
+  color: #ffffff;
+  filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.25));
 }
 .intro-letter{
   display: inline-block;
@@ -888,4 +885,77 @@ footer.site-footer{
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--mk-ink-dim);
+}
+
+/* ---------------- physics explainer diagrams ---------------- */
+.phys-diagram{
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 28px 0;
+}
+.phys-axis{ stroke: rgba(255,255,255,0.25); stroke-width: 1.5; }
+.phys-label{
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  fill: var(--mk-ink-dim);
+}
+.phys-label-strong{ fill: var(--mk-ink); font-size: 12px; }
+
+.phys-potential{
+  stroke: rgba(255,157,66,0.55);
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
+}
+.phys-horizon-line{ stroke: rgba(255,255,255,0.35); stroke-width: 1; stroke-dasharray: 3 3; }
+.phys-horizon-dot{ fill: #000; stroke: var(--mk-ink); stroke-width: 1.5; }
+
+.phys-packet{ fill: rgba(127,223,255,0.85); }
+.phys-packet-travel{
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: phys-packet-move 5s ease-in-out infinite;
+}
+@keyframes phys-packet-move {
+  0%   { transform: translateX(0)      scale(1);   opacity: 0; }
+  8%   { opacity: 1; }
+  82%  { transform: translateX(-350px) scale(0.35); opacity: 0.9; }
+  100% { transform: translateX(-360px) scale(0.25); opacity: 0; }
+}
+
+.phys-step rect{
+  fill: rgba(255,255,255,0.03);
+  stroke: var(--mk-glass-border);
+  stroke-width: 1.5;
+  transition: fill 0.3s ease, stroke 0.3s ease;
+}
+.phys-arrow{ stroke: rgba(255,255,255,0.3); stroke-width: 1.5; fill: none; }
+.phys-arrowhead{ fill: rgba(255,255,255,0.3); }
+
+.phys-step-1 rect{ animation: phys-step-glow 3.6s ease-in-out infinite; }
+.phys-step-2 rect{ animation: phys-step-glow 3.6s ease-in-out infinite; animation-delay: 1.2s; }
+.phys-step-3 rect{ animation: phys-step-glow 3.6s ease-in-out infinite; animation-delay: 2.4s; }
+@keyframes phys-step-glow {
+  0%, 92%, 100% { stroke: var(--mk-glass-border); fill: rgba(255,255,255,0.03); }
+  8%, 30% { stroke: rgba(127,223,255,0.8); fill: rgba(127,223,255,0.08); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .phys-packet-travel{ animation: none; opacity: 1; transform: translateX(-180px) scale(0.6); }
+  .phys-step-1 rect, .phys-step-2 rect, .phys-step-3 rect{ animation: none; }
+}
+
+/* ---------------- equation callout blocks ---------------- */
+.eqn-block{
+  display: block;
+  padding: 20px 24px;
+  margin: 20px 0 28px;
+  border-radius: 12px;
+  background: rgba(127,223,255,0.05);
+  border: 1px solid rgba(127,223,255,0.18);
+  color: var(--mk-cherenkov);
+  font-size: 14.5px;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre-wrap;
 }
