@@ -1,17 +1,10 @@
 import { useEffect, useRef } from "react";
 import { animate, createTimeline, stagger } from "animejs";
-import Backdrop from "./Backdrop.jsx";
 
-const INTRO_KEY = "singularity_intro_shown";
-
-/** True on the first load of a browser session; false on subsequent
- * in-app navigation, so the intro plays once, not on every route change. */
+/** Always show the intro. (Previously session-locked via sessionStorage —
+ * removed so it plays on every load/refresh.) */
 export function shouldShowIntro() {
-  try {
-    return !sessionStorage.getItem(INTRO_KEY);
-  } catch {
-    return true; // sessionStorage unavailable (e.g. privacy mode) — just show it
-  }
+  return true;
 }
 
 /**
@@ -30,7 +23,6 @@ export default function Splash({ onDone }) {
   const finish = () => {
     if (calledRef.current) return;
     calledRef.current = true;
-    try { sessionStorage.setItem(INTRO_KEY, "1"); } catch { /* ignore */ }
     onDone();
   };
 
@@ -88,7 +80,6 @@ export default function Splash({ onDone }) {
 
   return (
     <div className="intro-splash" ref={rootRef}>
-      <Backdrop intensity={0.5} />
       <div className="intro-content">
         <div className="intro-word" ref={wordRef}>
           Singularity
