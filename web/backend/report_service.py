@@ -8,9 +8,23 @@ from pathlib import Path
 from uuid import uuid4
 
 
-ROOT_DIR = Path(__file__).resolve().parents[2]
-MODEL_PATH = ROOT_DIR / "engines" / "python_models" / "blackhole_quantum_sim(1).py"
-REPORT_ROOT = Path(__file__).resolve().parent / "reports"
+_current_file = Path(__file__).resolve()
+
+if Path("/engines").exists():
+    # Docker environment where engines is mapped to /engines
+    MODEL_PATH = Path("/engines/python_models/blackhole_quantum_sim(1).py")
+elif (_current_file.parent / "engines").exists():
+    # Docker environment where engines is copied to /app/engines
+    MODEL_PATH = _current_file.parent / "engines" / "python_models" / "blackhole_quantum_sim(1).py"
+else:
+    # Local environment: Singularity/web/backend/report_service.py
+    # engines is 2 levels up
+    if len(_current_file.parents) > 2:
+        MODEL_PATH = _current_file.parents[2] / "engines" / "python_models" / "blackhole_quantum_sim(1).py"
+    else:
+        MODEL_PATH = _current_file.parent / "engines" / "python_models" / "blackhole_quantum_sim(1).py"
+
+REPORT_ROOT = _current_file.parent / "reports"
 
 _executor = ThreadPoolExecutor(max_workers=1)
 _jobs = {}

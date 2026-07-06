@@ -2,7 +2,8 @@ import os
 import csv
 import numpy as np
 import matplotlib
-matplotlib.use("Agg")
+matplotlib.use("QtAgg")
+
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation, PillowWriter
 from mpl_toolkits.mplot3d import Axes3D

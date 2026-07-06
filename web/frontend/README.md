@@ -2,8 +2,8 @@
 
 React + Vite dashboard for the Hawking radiation backend. No 3D yet — this
 is the instrument-panel layer: live wavefunction scope, probability/flux
-strip charts, and console-style controls, all driven by the `/ws` protocol
-from the FastAPI backend.
+strip charts, and console-style controls, driven by the FastAPI backend REST
+API.
 
 ## Run it
 
@@ -16,19 +16,18 @@ Then open the printed local URL (default `http://localhost:5173`). Make
 sure the backend is running first — `uvicorn main:app --host 0.0.0.0 --port 8000`
 from the `singularity-backend` folder.
 
-By default the app connects to `ws://<page-hostname>:8000/ws`, so dev-server
-and backend on the same machine need no config. If the backend lives
-elsewhere (e.g. a separate exhibition rig), create a `.env` file:
+By default the app calls `http://<page-hostname>:8000`. If the backend lives
+elsewhere (for example Render), create a `.env` file:
 
 ```
-VITE_WS_URL=ws://192.168.1.50:8000/ws
+VITE_API_URL=https://singularity-6kns.onrender.com
 ```
 
 ## What's here
 
-- `src/hooks/useSimulationSocket.js` — owns the WebSocket connection:
-  connects, auto-reconnects on drop, polls `get_history` once a second,
-  and exposes `{status, state, params, history, start, pause, reset, setSimParams}`.
+- `src/hooks/useSimulationSocket.js` — polls REST endpoints (`/api/state`,
+  `/api/params`, `/api/history`) once a second and exposes
+  `{status, state, params, history, start, pause, reset, setSimParams}`.
 - `src/components/ScopePanel.jsx` — the main live display. Canvas-drawn
   oscilloscope showing the bound wavefunction (cyan) and escaping Hawking
   radiation (amber) against the potential well, with the event horizon
@@ -38,8 +37,8 @@ VITE_WS_URL=ws://192.168.1.50:8000/ws
 - `src/components/ControlPanel.jsx` — Start/Pause/Reset plus sliders for
   the physically meaningful parameters (black hole mass, initial momentum,
   packet width, Hawking temperature, radiation width). Sliders update
-  local state live but only push `set_params` to the backend on release,
-  so dragging doesn't flood the socket.
+  local state live but only push updates to `/api/params` on release,
+  so dragging doesn't flood the backend.
 - `src/components/Readout.jsx` — small digital-style numeric readout.
 - `src/styles.css` — the whole design system as CSS variables (`--bg`,
   `--accent-bound`, `--accent-radiation`, etc.) plus the instrument-panel

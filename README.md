@@ -1,4 +1,4 @@
-# Project Singularity
+# Singularity
 
 A numerical black-hole quantum simulation stack.
 

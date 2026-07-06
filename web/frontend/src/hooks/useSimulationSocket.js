@@ -1,15 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-// Override with VITE_WS_URL in a .env file if the backend isn't on the same
-// host, e.g. VITE_WS_URL=ws://192.168.1.50:8000/ws for the exhibition rig.
-const WS_URL = import.meta.env.VITE_WS_URL || `ws://${window.location.hostname}:8000/ws`;
-const RECONNECT_DELAY_MS = 1500;
-const HISTORY_POLL_MS = 1000;
+const API_BASE = (import.meta.env.VITE_API_URL || `http://${window.location.hostname}:8000`).replace(/\/+$/, "");
+const POLL_MS = 1000;
 
 /**
- * Owns the WebSocket connection to the Project Singularity backend and
- * exposes live simulation state, params, and history, plus control actions.
- * Reconnects automatically on drop — important for a kiosk running unattended.
+ * Polls the Project Singularity REST backend and exposes simulation state,
+ * params, and history, plus control actions.
  */
 export function useSimulationSocket() {
   const [status, setStatus] = useState("connecting"); // connecting | connected | disconnected
@@ -17,69 +13,81 @@ export function useSimulationSocket() {
   const [params, setParams] = useState(null);
   const [history, setHistory] = useState({ times: [], probs: [], flux: [] });
 
-  const wsRef = useRef(null);
-  const reconnectTimer = useRef(null);
-  const historyTimer = useRef(null);
   const mounted = useRef(true);
+  const pollTimer = useRef(null);
+  const inFlight = useRef(false);
 
-  const send = useCallback((command, extra = {}) => {
-    const ws = wsRef.current;
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ command, ...extra }));
+  const request = useCallback(async (path, options = {}) => {
+    const response = await fetch(`${API_BASE}${path}`, options);
+    if (!response.ok) {
+      throw new Error(`Request failed: ${path} (${response.status})`);
     }
+    return response.json();
   }, []);
+
+  const refresh = useCallback(async () => {
+    if (!mounted.current || inFlight.current) return;
+    inFlight.current = true;
+    try {
+      const [nextState, nextParams, nextHistory] = await Promise.all([
+        request("/api/state"),
+        request("/api/params"),
+        request("/api/history"),
+      ]);
+
+      if (!mounted.current) return;
+      setState(nextState);
+      setParams(nextParams);
+      setHistory(nextHistory);
+      setStatus("connected");
+    } catch (err) {
+      if (mounted.current) {
+        setStatus("disconnected");
+        console.error("[singularity]", err);
+      }
+    } finally {
+      inFlight.current = false;
+    }
+  }, [request]);
 
   useEffect(() => {
     mounted.current = true;
 
-    function connect() {
-      const ws = new WebSocket(WS_URL);
-      wsRef.current = ws;
-
-      ws.onopen = () => {
-        if (!mounted.current) return;
-        setStatus("connected");
-        historyTimer.current = setInterval(() => send("get_history"), HISTORY_POLL_MS);
-      };
-
-      ws.onclose = () => {
-        if (!mounted.current) return;
-        setStatus("disconnected");
-        clearInterval(historyTimer.current);
-        reconnectTimer.current = setTimeout(connect, RECONNECT_DELAY_MS);
-      };
-
-      ws.onerror = () => ws.close();
-
-      ws.onmessage = (ev) => {
-        let msg;
-        try {
-          msg = JSON.parse(ev.data);
-        } catch {
-          return;
-        }
-        if (msg.type === "state") setState(msg.data);
-        else if (msg.type === "params") setParams(msg.data);
-        else if (msg.type === "history") setHistory(msg.data);
-        else if (msg.type === "error") console.error("[singularity]", msg.message);
-      };
-    }
-
-    connect();
+    refresh();
+    pollTimer.current = setInterval(refresh, POLL_MS);
 
     return () => {
       mounted.current = false;
-      clearTimeout(reconnectTimer.current);
-      clearInterval(historyTimer.current);
-      wsRef.current?.close();
+      clearInterval(pollTimer.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [refresh]);
 
-  const start = useCallback(() => send("start"), [send]);
-  const pause = useCallback(() => send("pause"), [send]);
-  const reset = useCallback(() => send("reset"), [send]);
-  const setSimParams = useCallback((patch) => send("set_params", { params: patch }), [send]);
+  const start = useCallback(async () => {
+    await request("/api/start", { method: "POST" });
+    await refresh();
+  }, [refresh, request]);
+
+  const pause = useCallback(async () => {
+    await request("/api/pause", { method: "POST" });
+    await refresh();
+  }, [refresh, request]);
+
+  const reset = useCallback(async () => {
+    await request("/api/reset", { method: "POST" });
+    await refresh();
+  }, [refresh, request]);
+
+  const setSimParams = useCallback(
+    async (patch) => {
+      await request("/api/params", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(patch),
+      });
+      await refresh();
+    },
+    [refresh, request],
+  );
 
   return { status, state, params, history, start, pause, reset, setSimParams };
 }

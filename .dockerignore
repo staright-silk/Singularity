@@ -1,0 +1,6 @@
+.git
+__pycache__
+*.pyc
+web/frontend/node_modules
+web/frontend/build
+reports
