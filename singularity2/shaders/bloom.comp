@@ -101,7 +101,7 @@ void main() {
 
     // Multi-scale bloom: tight sharp glow hugging edges + wide soft ambient glow
     vec3 tightBloom = ringBloom(hdrTex, uv, texel, 4.0,  3, 8, pc.threshold);
-    vec3 wideBloom  = ringBloom(hdrTex, uv, texel, 20.0, 4, 10, pc.threshold);
+    vec3 wideBloom  = ringBloom(hdrTex, uv, texel, 14.0, 4, 10, pc.threshold);
 
     vec3 streak = anamorphicStreak(hdrTex, uv, texel, pc.threshold);
     vec3 spikes = diffractionSpikes(hdrTex, uv, texel, pc.threshold);

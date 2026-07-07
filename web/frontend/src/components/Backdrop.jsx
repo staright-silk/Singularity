@@ -47,10 +47,24 @@ const FRAG_SRC = `
     vec2 dir = uv / max(r, 0.0001);
     vec2 warped = uv + dir * bend * 0.03;
 
+    // Two-scale starfield: many small dim stars + fewer bigger, brighter
+    // ones with slight color variety. Both layers ride on the same single
+    // full-screen draw call, so this adds a handful of extra math ops per
+    // pixel — not a new draw call or DOM element — essentially free next
+    // to the ridged-noise disk shading already happening below.
     float starField = hash21(floor(warped*900.0));
     float stars = smoothstep(0.9975, 1.0, starField);
     float starTwinkle = 0.6 + 0.4*sin(uTime*2.0 + starField*40.0);
-    vec3 col = vec3(0.012,0.013,0.02) + stars*starTwinkle*vec3(0.75,0.85,1.0)*0.7;
+
+    float bigStarField = hash21(floor(warped*260.0) + 91.7);
+    float bigStars = smoothstep(0.9945, 1.0, bigStarField);
+    float bigTwinkle = 0.5 + 0.5*sin(uTime*1.3 + bigStarField*70.0);
+    float bigColorSeed = hash21(floor(warped*260.0) + 33.1);
+    vec3 bigStarColor = mix(vec3(0.8,0.88,1.0), vec3(1.0,0.85,0.65), step(0.8, bigColorSeed));
+
+    vec3 col = vec3(0.012,0.013,0.02)
+      + stars*starTwinkle*vec3(0.75,0.85,1.0)*0.7
+      + bigStars*bigTwinkle*bigStarColor*1.15;
 
     float horizonR = 0.16;
     float ringR = horizonR * 1.06;

@@ -131,7 +131,7 @@ private:
     // Bloom tuning — feel free to ask for these to be exposed as keyboard
     // controls too if you want to tune them live like the camera.
     float bloomExposure = 0.75f;
-    float bloomThreshold = 1.6f; // pixels brighter than this start to bloom
+    float bloomThreshold = 2.1f; // pixels brighter than this start to bloom
 
     // -----------------------------------------------------------------
     void initWindow() {
